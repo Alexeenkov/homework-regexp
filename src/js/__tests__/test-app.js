@@ -1,59 +1,62 @@
-import orderByProps from '../app';
+import Validator from '../app';
 
-test('sorting the array according to the passed rule', () => {
-  const expected = [
-    { key: 'name', value: 'мечник' },
-    { key: 'level', value: 2 },
-    { key: 'attack', value: 80 },
-    { key: 'defence', value: 40 },
-    { key: 'health', value: 10 },
-  ];
-
-  const obj = {
-    name: 'мечник',
-    health: 10,
-    level: 2,
-    attack: 80,
-    defence: 40,
-  };
-
-  const received = orderByProps(obj, ['name', 'level']);
-
-  expect(received).toEqual(expected);
+test('the name is correct', () => {
+  const name = 'Diamond94-freeze_man';
+  expect(new Validator().validateUsername(name)).toBeTruthy();
 });
 
-test('sorting an array without a passed rule', () => {
-  const expected = [
-    { key: 'attack', value: 80 },
-    { key: 'defence', value: 40 },
-    { key: 'health', value: 10 },
-    { key: 'level', value: 2 },
-    { key: 'name', value: 'мечник' },
-  ];
+test('the name is incorrect (It should not end with numbers)', () => {
+  const name = 'Diamond94-freeze_man1';
 
-  const obj = {
-    name: 'мечник',
-    health: 10,
-    level: 2,
-    attack: 80,
-    defence: 40,
-  };
-
-  const received = orderByProps(obj);
-
-  expect(received).toEqual(expected);
+  expect(() => new Validator().validateUsername(name)).toThrowError(
+    new Error(`Имя ${name} некорректно`),
+  );
 });
 
-test('sorting an array by an incorrect rule', () => {
-  const obj = {
-    name: 'мечник',
-    health: 10,
-    level: 2,
-    attack: 80,
-    defence: 40,
-  };
+test('the name is incorrect (It should not end with a sign -)', () => {
+  const name = 'Diamond94-freeze_man-';
 
-  expect(() => orderByProps(obj, ['prop'])).toThrowError(
-    new Error('Check the sorting parameters. One of the specified properties is missing in the object'),
+  expect(() => new Validator().validateUsername(name)).toThrowError(
+    new Error(`Имя ${name} некорректно`),
+  );
+});
+
+test('the name is incorrect (It should not end with a sign _)', () => {
+  const name = 'Diamond94-freeze_man_';
+
+  expect(() => new Validator().validateUsername(name)).toThrowError(
+    new Error(`Имя ${name} некорректно`),
+  );
+});
+
+test('the name is incorrect (It should not start with numbers)', () => {
+  const name = '1Diamond94-freeze_man';
+
+  expect(() => new Validator().validateUsername(name)).toThrowError(
+    new Error(`Имя ${name} некорректно`),
+  );
+});
+
+test('the name is incorrect (It should not start with a sign -)', () => {
+  const name = '-Diamond94-freeze_man';
+
+  expect(() => new Validator().validateUsername(name)).toThrowError(
+    new Error(`Имя ${name} некорректно`),
+  );
+});
+
+test('the name is incorrect (It should not start with a sign _)', () => {
+  const name = '_Diamond94-freeze_man';
+
+  expect(() => new Validator().validateUsername(name)).toThrowError(
+    new Error(`Имя ${name} некорректно`),
+  );
+});
+
+test('the name is incorrect (It should be only in Latin)', () => {
+  const name = 'Diamond94-Иван-freeze_man';
+
+  expect(() => new Validator().validateUsername(name)).toThrowError(
+    new Error(`Имя ${name} некорректно`),
   );
 });

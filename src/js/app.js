@@ -1,37 +1,12 @@
-export default function orderByProps(object, rulesSort) {
-  const arr = [];
-  // Отсортированный массив из свойств объекта по алфавиту:
-  const sortKeysObject = Object.keys(object).sort();
+export default class Validator {
+  validateUsername(name) {
+    const regExpOne = /^[^\W\d_][\w-]+[^\W\d_]$/g;
+    const regExpTwo = /\d{3}/;
 
-  // Функция добавляет отсортированные объекты в массив согласно задания:
-  const pushObjectsToArr = () => {
-    for (const elem of sortKeysObject) {
-      arr.push({ key: elem, value: object[elem] });
+    if (regExpOne.test(name) && !regExpTwo.test(name)) {
+      this.name = name;
+      return true;
     }
-  };
-
-  // ? Если правило сортировки не передано,
-  // то возвращаем массив объектов, отсортированных по алфавиту:
-  if (!rulesSort) {
-    pushObjectsToArr();
-    return arr;
+    throw new Error(`Имя ${name} некорректно`);
   }
-
-  // ? Если правило сортировки передано, но хотя бы одно из свойств отсутствует в объекте:
-  if (rulesSort.some((elem) => !Object.prototype.hasOwnProperty.call(object, elem))) {
-    throw new Error('Check the sorting parameters. One of the specified properties is missing in the object');
-  }
-
-  // ? Если правило сортировки передано корректно:
-  for (const key in object) {
-    if (rulesSort.includes(key)) {
-      // Добавляем объекты в массив согласно переданному правилу:
-      arr[rulesSort.indexOf(key)] = { key, value: object[key] };
-      // Удаляем из отсортированного массива уже добавленные свойства:
-      sortKeysObject.splice(sortKeysObject.indexOf(key), 1);
-    }
-  }
-  // Добавляем оставшиеся элементы отсортированного массива:
-  pushObjectsToArr();
-  return arr;
 }
