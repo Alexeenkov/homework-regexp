@@ -1,62 +1,61 @@
-import Validator from '../app';
+import Team from '../app';
+import Character from '../character';
 
-test('the name is correct', () => {
-  const name = 'Diamond94-freeze_man';
-  expect(new Validator().validateUsername(name)).toBeTruthy();
+test('Add a new character on the team', () => {
+  const expected = {
+    name: 'Ivan',
+    level: 15,
+  };
+
+  const team = new Team();
+  team.add(new Character('Ivan', 15));
+
+  expect([...team.members][0]).toEqual(expected);
 });
 
-test('the name is incorrect (It should not end with numbers)', () => {
-  const name = 'Diamond94-freeze_man1';
-
-  expect(() => new Validator().validateUsername(name)).toThrowError(
-    new Error(`Имя ${name} некорректно`),
+test('Add a new character on the team (already exists)', () => {
+  expect(() => {
+    const team = new Team();
+    const character = new Character('Ivan', 15);
+    team.add(character);
+    team.add(character);
+  }).toThrowError(
+    new Error('Такой персонаж уже находится в команде!'),
   );
 });
 
-test('the name is incorrect (It should not end with a sign -)', () => {
-  const name = 'Diamond94-freeze_man-';
+test('Add a several new characters on the team', () => {
+  const expected = [
+    {
+      name: 'Ivan',
+      level: 15,
+    },
+    {
+      name: 'Dmitry',
+      level: 16,
+    },
+  ];
 
-  expect(() => new Validator().validateUsername(name)).toThrowError(
-    new Error(`Имя ${name} некорректно`),
-  );
+  const team = new Team();
+  team.addAll(new Character('Ivan', 15), new Character('Dmitry', 16));
+
+  expect([...team.members]).toEqual(expected);
 });
 
-test('the name is incorrect (It should not end with a sign _)', () => {
-  const name = 'Diamond94-freeze_man_';
+test('Transformation the team to array', () => {
+  const expected = [
+    {
+      name: 'Ivan',
+      level: 15,
+    },
+    {
+      name: 'Dmitry',
+      level: 16,
+    },
+  ];
 
-  expect(() => new Validator().validateUsername(name)).toThrowError(
-    new Error(`Имя ${name} некорректно`),
-  );
-});
+  const team = new Team();
+  team.addAll(new Character('Ivan', 15), new Character('Dmitry', 16));
 
-test('the name is incorrect (It should not start with numbers)', () => {
-  const name = '1Diamond94-freeze_man';
-
-  expect(() => new Validator().validateUsername(name)).toThrowError(
-    new Error(`Имя ${name} некорректно`),
-  );
-});
-
-test('the name is incorrect (It should not start with a sign -)', () => {
-  const name = '-Diamond94-freeze_man';
-
-  expect(() => new Validator().validateUsername(name)).toThrowError(
-    new Error(`Имя ${name} некорректно`),
-  );
-});
-
-test('the name is incorrect (It should not start with a sign _)', () => {
-  const name = '_Diamond94-freeze_man';
-
-  expect(() => new Validator().validateUsername(name)).toThrowError(
-    new Error(`Имя ${name} некорректно`),
-  );
-});
-
-test('the name is incorrect (It should be only in Latin)', () => {
-  const name = 'Diamond94-Иван-freeze_man';
-
-  expect(() => new Validator().validateUsername(name)).toThrowError(
-    new Error(`Имя ${name} некорректно`),
-  );
+  expect(team.toArray()).toEqual(expected);
 });

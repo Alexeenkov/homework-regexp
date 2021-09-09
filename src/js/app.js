@@ -1,12 +1,22 @@
-export default class Validator {
-  validateUsername(name) {
-    const regExpOne = /^[^\W\d_][\w-]+[^\W\d_]$/g;
-    const regExpTwo = /\d{3}/;
+export default class Team {
+  constructor() {
+    this.members = new Set();
+  }
 
-    if (regExpOne.test(name) && !regExpTwo.test(name)) {
-      this.name = name;
-      return true;
+  add(character) {
+    if (this.members.has(character)) {
+      throw new Error('Такой персонаж уже находится в команде!');
     }
-    throw new Error(`Имя ${name} некорректно`);
+    this.members.add(character);
+  }
+
+  addAll(...characters) {
+    characters.forEach((character) => {
+      this.members.add(character);
+    });
+  }
+
+  toArray() {
+    return [...this.members];
   }
 }
